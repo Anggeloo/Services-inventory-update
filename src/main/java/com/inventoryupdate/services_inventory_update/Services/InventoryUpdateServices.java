@@ -25,27 +25,28 @@ public class InventoryUpdateServices {
     }
 
     public ApiResponse<Inventory> updateInventory(Inventory inventory) {
-        boolean exists = checkProductExists(inventory.getCodigoProducto());
+        boolean exists = checkProductExists(inventory.getProductCode());
         if (!exists) {
-            return new ApiResponse<Inventory>("error", null, "El código de producto no existe en el sistema.");
+            return new ApiResponse<Inventory>("error", null, "The product code does not exist in the system.");
         }
     
-        Inventory existingInventory = _repository.findByCodigoInventario(inventory.getCodigoInventario());
+        Inventory existingInventory = _repository.findByInventoryCode(inventory.getInventoryCode());
     
         if (existingInventory == null) {
-            return new ApiResponse<Inventory>("error", null, "El inventario con el código proporcionado no existe.");
+            return new ApiResponse<Inventory>("error", null, "The inventory with the provided code does not exist.");
         }
         
-        existingInventory.setCodigoProducto(inventory.getCodigoProducto());
-        existingInventory.setCantidadDisponible(inventory.getCantidadDisponible());
-        inventory.setFechaActualizacion(LocalDateTime.now());
+        existingInventory.setProductCode(inventory.getProductCode());
+        existingInventory.setAvailableQuantity(inventory.getAvailableQuantity());
+        inventory.setUpdatedAt(LocalDateTime.now());
         _repository.save(existingInventory);
 
-        return new ApiResponse<Inventory>("success", existingInventory, "Inventario actualizado correctamente.");
+        return new ApiResponse<Inventory>("success", existingInventory, "Inventory updated successfully.");
     }    
 
-    private boolean checkProductExists(String codigoProducto) {
-        String url = "http://app_producto_search:3000/products/byCodiceProducto/codice?codice=" + codigoProducto;
+    private boolean checkProductExists(String codice) {
+        //String url = "http://localhost:3000/products/byCodiceProducto?codice=" + codice;
+        String url = "http://app_producto_search:3000/products/byCodiceProducto?codice=" + codice;
         try {
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
             String status = (String) response.get("status");
