@@ -21,11 +21,6 @@ cd services-inventory-update
 ## Environment Variables
 Create a `.env` file in the root directory and configure the required variables:
 
-```ini
-DB_URL=jdbc:mysql://your_database_host:3306/your_database_name
-DB_USER_NAME=your_database_user
-DB_PASSWORD=your_database_password
-```
 
 ## Installation
 1. Build the project using Maven:
